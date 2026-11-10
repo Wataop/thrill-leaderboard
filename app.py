@@ -289,14 +289,13 @@ HTML = """
                         <th class="rank">#</th>
                         <th>Игрок</th>
                         <th>Оборот ($)</th>
-                        <th>Заработок ($)</th>
                         <th>XP</th>
                         <th>Дата</th>
                     </tr>
                 </thead>
                 <tbody id="tbody">
                     <tr>
-                        <td colspan="6" class="loading">Загрузка...</td>
+                        <td colspan="5" class="loading">Загрузка...</td>
                     </tr>
                 </tbody>
             </table>
@@ -329,7 +328,7 @@ HTML = """
                             <div class="place">${labels[i]}</div>
                             <div class="username">${item.username}</div>
                             <div class="stat">Оборот<strong>${item.wager.toLocaleString('ru-RU', {maximumFractionDigits: 0})} $</strong></div>
-                            <div class="stat" style="margin-top:12px">Заработок<strong>${item.earning.toLocaleString('ru-RU', {maximumFractionDigits: 2})} $</strong></div>
+                            <div class="stat" style="margin-top:12px">XP<strong>${Math.round(item.xp).toLocaleString('ru-RU')}</strong></div>
                         </div>
                     `).join('');
                 }
@@ -347,7 +346,6 @@ HTML = """
                             <td class="rank ${rankClass}">${i + 1}</td>
                             <td><strong>${item.username}</strong></td>
                             <td class="number">${item.wager.toLocaleString('ru-RU', {maximumFractionDigits: 2})}</td>
-                            <td class="number">${item.earning.toLocaleString('ru-RU', {maximumFractionDigits: 2})}</td>
                             <td class="number">${Math.round(item.xp).toLocaleString('ru-RU')}</td>
                             <td>${new Date(item.createdAt).toLocaleDateString('ru-RU')}</td>
                         </tr>
@@ -396,13 +394,11 @@ def get_leaderboard():
         items = []
         for item in data.get("items", []):
             wager = float(item["wager"]["value"]) / (10 ** item["wager"]["decimals"])
-            earning = float(item["earning"]["value"]) / (10 ** item["earning"]["decimals"])
             xp = float(item["xp"]["value"]) / (10 ** item["xp"].get("decimals", 0))
 
             items.append({
                 "username": item["username"],
                 "wager": wager,
-                "earning": earning,
                 "xp": xp,
                 "createdAt": item["createdAt"]
             })
