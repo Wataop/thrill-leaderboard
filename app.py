@@ -18,21 +18,18 @@ HTML = """
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Thrill Referral Leaderboard</title>
+    <title>Kxrvinho Thrill Referral Leaderboard</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
         :root {
-            --bg: #0b0b0f;
-            --card: #15151c;
-            --card-hover: #1c1c26;
-            --border: #2a2a35;
-            --text: #f0f0f5;
-            --muted: #8b8b9b;
-            --accent: #8b5cf6;
-            --gold: #fbbf24;
-            --silver: #94a3b8;
-            --bronze: #d97706;
+            --primary: #1B1D29;
+            --secondary: #5CFFC1;
+            --accent: #FFFFFF;
+            --card: #232533;
+            --card-hover: #2a2d3e;
+            --border: #2f3347;
+            --muted: #9ca3af;
         }
 
         * {
@@ -43,11 +40,10 @@ HTML = """
 
         body {
             font-family: 'Inter', system-ui, sans-serif;
-            background: var(--bg);
-            color: var(--text);
+            background: var(--primary);
+            color: var(--accent);
             min-height: 100vh;
-            padding: 30px 20px 60px;
-            line-height: 1.5;
+            padding: 40px 20px 80px;
         }
 
         .container {
@@ -57,22 +53,25 @@ HTML = """
 
         header {
             text-align: center;
-            margin-bottom: 40px;
+            margin-bottom: 50px;
         }
 
         header h1 {
-            font-size: 32px;
-            font-weight: 700;
-            letter-spacing: -0.5px;
-            margin-bottom: 8px;
-            background: linear-gradient(90deg, #fff, #c4b5fd);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
+            font-size: 34px;
+            font-weight: 800;
+            letter-spacing: -0.8px;
+            margin-bottom: 10px;
+            color: var(--accent);
+        }
+
+        header h1 span {
+            color: var(--secondary);
         }
 
         .subtitle {
             color: var(--muted);
             font-size: 15px;
+            font-weight: 500;
         }
 
         /* Top 3 */
@@ -80,65 +79,64 @@ HTML = """
             display: grid;
             grid-template-columns: repeat(3, 1fr);
             gap: 20px;
-            margin-bottom: 40px;
+            margin-bottom: 45px;
         }
 
         .top-card {
             background: var(--card);
             border: 1px solid var(--border);
-            border-radius: 16px;
-            padding: 24px 20px;
+            border-radius: 18px;
+            padding: 28px 20px;
             text-align: center;
+            transition: all 0.25s ease;
             position: relative;
-            transition: 0.2s;
         }
 
         .top-card:hover {
-            transform: translateY(-4px);
-            border-color: #3f3f4a;
+            transform: translateY(-6px);
+            border-color: var(--secondary);
         }
 
         .top-card.first {
-            border-color: var(--gold);
-            background: linear-gradient(145deg, #1a1608, #15151c);
+            border: 1px solid var(--secondary);
+            box-shadow: 0 0 30px rgba(92, 255, 193, 0.12);
         }
 
         .place {
-            font-size: 14px;
-            font-weight: 600;
+            font-size: 13px;
+            font-weight: 700;
             text-transform: uppercase;
-            letter-spacing: 1px;
-            margin-bottom: 12px;
+            letter-spacing: 1.5px;
+            margin-bottom: 14px;
+            color: var(--secondary);
         }
 
-        .place.gold { color: var(--gold); }
-        .place.silver { color: var(--silver); }
-        .place.bronze { color: var(--bronze); }
-
         .username {
-            font-size: 20px;
-            font-weight: 600;
-            margin-bottom: 16px;
+            font-size: 22px;
+            font-weight: 700;
+            margin-bottom: 18px;
             word-break: break-all;
         }
 
         .stat {
             font-size: 13px;
             color: var(--muted);
-            margin-bottom: 4px;
+            margin-bottom: 6px;
         }
 
         .stat strong {
-            color: var(--text);
-            font-size: 16px;
-            font-weight: 600;
+            display: block;
+            color: var(--accent);
+            font-size: 18px;
+            font-weight: 700;
+            margin-top: 2px;
         }
 
         /* Table */
         .table-wrapper {
             background: var(--card);
             border: 1px solid var(--border);
-            border-radius: 16px;
+            border-radius: 18px;
             overflow: hidden;
         }
 
@@ -149,18 +147,20 @@ HTML = """
 
         th {
             text-align: left;
-            padding: 16px 20px;
+            padding: 18px 22px;
             font-size: 13px;
-            font-weight: 500;
+            font-weight: 600;
             color: var(--muted);
-            background: #121218;
+            background: #1e2030;
             border-bottom: 1px solid var(--border);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
 
         td {
-            padding: 14px 20px;
+            padding: 16px 22px;
             border-bottom: 1px solid var(--border);
-            font-size: 14px;
+            font-size: 15px;
         }
 
         tr:last-child td {
@@ -172,45 +172,48 @@ HTML = """
         }
 
         .rank {
-            width: 60px;
-            font-weight: 600;
+            width: 70px;
+            font-weight: 700;
             color: var(--muted);
         }
 
-        .rank.gold { color: var(--gold); }
-        .rank.silver { color: var(--silver); }
-        .rank.bronze { color: var(--bronze); }
+        .rank.top {
+            color: var(--secondary);
+        }
 
         .number {
             font-variant-numeric: tabular-nums;
-            font-weight: 500;
+            font-weight: 600;
         }
 
-        .loading {
+        .loading, .error {
             text-align: center;
             padding: 60px 20px;
             color: var(--muted);
         }
 
         .error {
-            text-align: center;
-            padding: 40px;
             color: #f87171;
         }
 
-        @media (max-width: 768px) {
+        @media (max-width: 800px) {
             .top3 {
                 grid-template-columns: 1fr;
             }
-            header h1 { font-size: 26px; }
-            th, td { padding: 12px 14px; font-size: 13px; }
+            header h1 {
+                font-size: 26px;
+            }
+            th, td {
+                padding: 13px 14px;
+                font-size: 13px;
+            }
         }
     </style>
 </head>
 <body>
     <div class="container">
         <header>
-            <h1>Thrill Referral Leaderboard</h1>
+            <h1>Kxrvinho <span>Thrill</span> Referral Leaderboard</h1>
             <div class="subtitle" id="info">Загрузка данных...</div>
         </header>
 
@@ -229,7 +232,9 @@ HTML = """
                     </tr>
                 </thead>
                 <tbody id="tbody">
-                    <tr><td colspan="6" class="loading">Загрузка...</td></tr>
+                    <tr>
+                        <td colspan="6" class="loading">Загрузка...</td>
+                    </tr>
                 </tbody>
             </table>
         </div>
@@ -253,15 +258,14 @@ HTML = """
                 const top3 = document.getElementById('top3');
                 if (json.items.length >= 3) {
                     top3.style.display = 'grid';
-                    const places = ['gold', 'silver', 'bronze'];
                     const labels = ['1 место', '2 место', '3 место'];
 
                     top3.innerHTML = json.items.slice(0, 3).map((item, i) => `
                         <div class="top-card ${i === 0 ? 'first' : ''}">
-                            <div class="place ${places[i]}">${labels[i]}</div>
+                            <div class="place">${labels[i]}</div>
                             <div class="username">${item.username}</div>
-                            <div class="stat">Оборот<br><strong>${item.wager.toLocaleString('ru-RU', {maximumFractionDigits: 0})} $</strong></div>
-                            <div class="stat" style="margin-top:10px">Заработок<br><strong>${item.earning.toLocaleString('ru-RU', {maximumFractionDigits: 2})} $</strong></div>
+                            <div class="stat">Оборот<strong>${item.wager.toLocaleString('ru-RU', {maximumFractionDigits: 0})} $</strong></div>
+                            <div class="stat" style="margin-top:12px">Заработок<strong>${item.earning.toLocaleString('ru-RU', {maximumFractionDigits: 2})} $</strong></div>
                         </div>
                     `).join('');
                 }
@@ -269,7 +273,7 @@ HTML = """
                 // Table
                 const tbody = document.getElementById('tbody');
                 tbody.innerHTML = json.items.map((item, i) => {
-                    const rankClass = i === 0 ? 'gold' : i === 1 ? 'silver' : i === 2 ? 'bronze' : '';
+                    const rankClass = i < 3 ? 'top' : '';
                     return `
                         <tr>
                             <td class="rank ${rankClass}">${i + 1}</td>
