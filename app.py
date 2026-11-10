@@ -85,8 +85,26 @@ HTML = """
             line-height: 1.2;
         }
 
-        header h1 span {
+        header h1 a {
+            text-decoration: none;
+            transition: 0.2s;
+        }
+
+        header h1 a.kxrvinho {
+            color: var(--accent);
+        }
+
+        header h1 a.kxrvinho:hover {
             color: var(--secondary);
+        }
+
+        header h1 a.thrill {
+            color: var(--secondary);
+        }
+
+        header h1 a.thrill:hover {
+            color: #8bffe0;
+            text-shadow: 0 0 12px rgba(92, 255, 193, 0.4);
         }
 
         .subtitle {
@@ -253,7 +271,11 @@ HTML = """
                  alt="Kxrvinho" 
                  class="avatar">
             <div class="header-text">
-                <h1>Kxrvinho <span>Thrill</span> Referral Leaderboard</h1>
+                <h1>
+                    <a href="https://www.twitch.tv/kxrvinho" target="_blank" class="kxrvinho">Kxrvinho</a> 
+                    <a href="https://thrill.com/?r=GG33" target="_blank" class="thrill">Thrill</a> 
+                    Referral Leaderboard
+                </h1>
                 <div class="subtitle" id="info">Загрузка данных...</div>
             </div>
         </header>
