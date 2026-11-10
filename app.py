@@ -30,6 +30,9 @@ HTML = """
             --card-hover: #2a2d3e;
             --border: #2f3347;
             --muted: #9ca3af;
+            --gold: #FFD700;
+            --silver: #C0C0C0;
+            --bronze: #CD7F32;
         }
 
         * {
@@ -52,16 +55,34 @@ HTML = """
         }
 
         header {
-            text-align: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 18px;
             margin-bottom: 50px;
+            flex-wrap: wrap;
+        }
+
+        .avatar {
+            width: 64px;
+            height: 64px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3px solid var(--secondary);
+            box-shadow: 0 0 20px rgba(92, 255, 193, 0.25);
+        }
+
+        .header-text {
+            text-align: left;
         }
 
         header h1 {
-            font-size: 34px;
+            font-size: 32px;
             font-weight: 800;
             letter-spacing: -0.8px;
-            margin-bottom: 10px;
+            margin-bottom: 6px;
             color: var(--accent);
+            line-height: 1.2;
         }
 
         header h1 span {
@@ -84,7 +105,7 @@ HTML = """
 
         .top-card {
             background: var(--card);
-            border: 1px solid var(--border);
+            border: 2px solid var(--border);
             border-radius: 18px;
             padding: 28px 20px;
             text-align: center;
@@ -94,12 +115,21 @@ HTML = """
 
         .top-card:hover {
             transform: translateY(-6px);
-            border-color: var(--secondary);
         }
 
         .top-card.first {
-            border: 1px solid var(--secondary);
-            box-shadow: 0 0 30px rgba(92, 255, 193, 0.12);
+            border-color: var(--gold);
+            box-shadow: 0 0 25px rgba(255, 215, 0, 0.15);
+        }
+
+        .top-card.second {
+            border-color: var(--silver);
+            box-shadow: 0 0 20px rgba(192, 192, 192, 0.12);
+        }
+
+        .top-card.third {
+            border-color: var(--bronze);
+            box-shadow: 0 0 20px rgba(205, 127, 50, 0.12);
         }
 
         .place {
@@ -108,8 +138,11 @@ HTML = """
             text-transform: uppercase;
             letter-spacing: 1.5px;
             margin-bottom: 14px;
-            color: var(--secondary);
         }
+
+        .top-card.first .place { color: var(--gold); }
+        .top-card.second .place { color: var(--silver); }
+        .top-card.third .place { color: var(--bronze); }
 
         .username {
             font-size: 22px;
@@ -177,9 +210,9 @@ HTML = """
             color: var(--muted);
         }
 
-        .rank.top {
-            color: var(--secondary);
-        }
+        .rank.gold { color: var(--gold); }
+        .rank.silver { color: var(--silver); }
+        .rank.bronze { color: var(--bronze); }
 
         .number {
             font-variant-numeric: tabular-nums;
@@ -192,11 +225,14 @@ HTML = """
             color: var(--muted);
         }
 
-        .error {
-            color: #f87171;
-        }
-
         @media (max-width: 800px) {
+            header {
+                flex-direction: column;
+                text-align: center;
+            }
+            .header-text {
+                text-align: center;
+            }
             .top3 {
                 grid-template-columns: 1fr;
             }
@@ -213,8 +249,13 @@ HTML = """
 <body>
     <div class="container">
         <header>
-            <h1>Kxrvinho <span>Thrill</span> Referral Leaderboard</h1>
-            <div class="subtitle" id="info">Загрузка данных...</div>
+            <img src="https://static-cdn.jtvnw.net/jtv_user_pictures/d0d7bc81-f630-4503-9f50-a50ed431a044-profile_image-300x300.png" 
+                 alt="Kxrvinho" 
+                 class="avatar">
+            <div class="header-text">
+                <h1>Kxrvinho <span>Thrill</span> Referral Leaderboard</h1>
+                <div class="subtitle" id="info">Загрузка данных...</div>
+            </div>
         </header>
 
         <div class="top3" id="top3" style="display: none;"></div>
@@ -259,9 +300,10 @@ HTML = """
                 if (json.items.length >= 3) {
                     top3.style.display = 'grid';
                     const labels = ['1 место', '2 место', '3 место'];
+                    const classes = ['first', 'second', 'third'];
 
                     top3.innerHTML = json.items.slice(0, 3).map((item, i) => `
-                        <div class="top-card ${i === 0 ? 'first' : ''}">
+                        <div class="top-card ${classes[i]}">
                             <div class="place">${labels[i]}</div>
                             <div class="username">${item.username}</div>
                             <div class="stat">Оборот<strong>${item.wager.toLocaleString('ru-RU', {maximumFractionDigits: 0})} $</strong></div>
@@ -273,7 +315,11 @@ HTML = """
                 // Table
                 const tbody = document.getElementById('tbody');
                 tbody.innerHTML = json.items.map((item, i) => {
-                    const rankClass = i < 3 ? 'top' : '';
+                    let rankClass = '';
+                    if (i === 0) rankClass = 'gold';
+                    else if (i === 1) rankClass = 'silver';
+                    else if (i === 2) rankClass = 'bronze';
+
                     return `
                         <tr>
                             <td class="rank ${rankClass}">${i + 1}</td>
