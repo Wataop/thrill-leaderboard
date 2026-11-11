@@ -59,7 +59,7 @@ HTML = """
             align-items: center;
             justify-content: center;
             gap: 18px;
-            margin-bottom: 50px;
+            margin-bottom: 30px;
             flex-wrap: wrap;
         }
 
@@ -111,6 +111,21 @@ HTML = """
             color: var(--muted);
             font-size: 15px;
             font-weight: 500;
+        }
+
+        .end-date {
+            text-align: center;
+            margin-bottom: 40px;
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--secondary);
+            background: rgba(92, 255, 193, 0.08);
+            border: 1px solid rgba(92, 255, 193, 0.25);
+            display: inline-block;
+            padding: 10px 22px;
+            border-radius: 12px;
+            margin-left: 50%;
+            transform: translateX(-50%);
         }
 
         /* Top 3 */
@@ -348,6 +363,10 @@ HTML = """
             </div>
         </header>
 
+        <div class="end-date">
+            Гонка заканчивается 30 ноября
+        </div>
+
         <div class="top3" id="top3" style="display: none;"></div>
 
         <div class="extra-prizes">
@@ -378,6 +397,21 @@ HTML = """
     <script>
         const prizes = [450, 250, 150, 100, 50];
 
+        function formatMoscowTime(isoString) {
+            const date = new Date(isoString);
+            // Москва = UTC+3
+            const options = {
+                timeZone: 'Europe/Moscow',
+                day: '2-digit',
+                month: '2-digit',
+                year: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit',
+                second: '2-digit'
+            };
+            return date.toLocaleString('ru-RU', options) + ' МСК';
+        }
+
         async function loadData() {
             try {
                 const res = await fetch('/api/data');
@@ -389,7 +423,7 @@ HTML = """
                 }
 
                 document.getElementById('info').textContent = 
-                    `Обновлено: ${new Date(json.updated).toLocaleString('ru-RU')}  •  Всего игроков: ${json.total}`;
+                    `Обновлено: ${formatMoscowTime(json.updated)}  •  Всего игроков: ${json.total}`;
 
                 // Top 3
                 const top3 = document.getElementById('top3');
