@@ -129,6 +129,7 @@ HTML = """
             text-align: center;
             transition: all 0.25s ease;
             position: relative;
+            overflow: hidden;
         }
 
         .top-card:hover {
@@ -165,7 +166,7 @@ HTML = """
         .username {
             font-size: 22px;
             font-weight: 700;
-            margin-bottom: 18px;
+            margin-bottom: 16px;
             word-break: break-all;
         }
 
@@ -178,9 +179,71 @@ HTML = """
         .stat strong {
             display: block;
             color: var(--accent);
-            font-size: 18px;
+            font-size: 17px;
             font-weight: 700;
             margin-top: 2px;
+        }
+
+        .prize {
+            margin-top: 18px;
+            padding: 10px 16px;
+            border-radius: 12px;
+            font-weight: 800;
+            font-size: 20px;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            animation: prizePulse 2.5s ease-in-out infinite;
+        }
+
+        .top-card.first .prize {
+            background: rgba(255, 215, 0, 0.12);
+            color: var(--gold);
+            border: 1px solid rgba(255, 215, 0, 0.3);
+        }
+
+        .top-card.second .prize {
+            background: rgba(192, 192, 192, 0.12);
+            color: var(--silver);
+            border: 1px solid rgba(192, 192, 192, 0.3);
+        }
+
+        .top-card.third .prize {
+            background: rgba(205, 127, 50, 0.12);
+            color: var(--bronze);
+            border: 1px solid rgba(205, 127, 50, 0.3);
+        }
+
+        @keyframes prizePulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.04); }
+        }
+
+        /* Prizes for 4-5 */
+        .extra-prizes {
+            display: flex;
+            justify-content: center;
+            gap: 16px;
+            margin-bottom: 40px;
+            flex-wrap: wrap;
+        }
+
+        .extra-prize {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            padding: 14px 22px;
+            font-weight: 700;
+            font-size: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: var(--accent);
+        }
+
+        .extra-prize span {
+            color: var(--secondary);
+            font-size: 18px;
         }
 
         /* Table */
@@ -237,6 +300,11 @@ HTML = """
             font-weight: 600;
         }
 
+        .prize-cell {
+            font-weight: 700;
+            color: var(--secondary);
+        }
+
         .loading, .error {
             text-align: center;
             padding: 60px 20px;
@@ -282,6 +350,11 @@ HTML = """
 
         <div class="top3" id="top3" style="display: none;"></div>
 
+        <div class="extra-prizes">
+            <div class="extra-prize">4 место — <span>$100</span></div>
+            <div class="extra-prize">5 место — <span>$50</span></div>
+        </div>
+
         <div class="table-wrapper">
             <table>
                 <thead>
@@ -290,7 +363,7 @@ HTML = """
                         <th>Игрок</th>
                         <th>Оборот ($)</th>
                         <th>XP</th>
-                        <th>Дата</th>
+                        <th>Приз</th>
                     </tr>
                 </thead>
                 <tbody id="tbody">
@@ -303,6 +376,8 @@ HTML = """
     </div>
 
     <script>
+        const prizes = [450, 250, 150, 100, 50];
+
         async function loadData() {
             try {
                 const res = await fetch('/api/data');
@@ -328,7 +403,8 @@ HTML = """
                             <div class="place">${labels[i]}</div>
                             <div class="username">${item.username}</div>
                             <div class="stat">Оборот<strong>${item.wager.toLocaleString('ru-RU', {maximumFractionDigits: 0})} $</strong></div>
-                            <div class="stat" style="margin-top:12px">XP<strong>${Math.round(item.xp).toLocaleString('ru-RU')}</strong></div>
+                            <div class="stat" style="margin-top:10px">XP<strong>${Math.round(item.xp).toLocaleString('ru-RU')}</strong></div>
+                            <div class="prize">$${prizes[i]}</div>
                         </div>
                     `).join('');
                 }
@@ -341,13 +417,15 @@ HTML = """
                     else if (i === 1) rankClass = 'silver';
                     else if (i === 2) rankClass = 'bronze';
 
+                    const prizeText = i < 5 ? `$${prizes[i]}` : '—';
+
                     return `
                         <tr>
                             <td class="rank ${rankClass}">${i + 1}</td>
                             <td><strong>${item.username}</strong></td>
                             <td class="number">${item.wager.toLocaleString('ru-RU', {maximumFractionDigits: 2})}</td>
                             <td class="number">${Math.round(item.xp).toLocaleString('ru-RU')}</td>
-                            <td>${new Date(item.createdAt).toLocaleDateString('ru-RU')}</td>
+                            <td class="prize-cell">${prizeText}</td>
                         </tr>
                     `;
                 }).join('');
@@ -399,8 +477,7 @@ def get_leaderboard():
             items.append({
                 "username": item["username"],
                 "wager": wager,
-                "xp": xp,
-                "createdAt": item["createdAt"]
+                "xp": xp
             })
 
         items.sort(key=lambda x: x["wager"], reverse=True)
