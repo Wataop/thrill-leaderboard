@@ -2,7 +2,7 @@ from flask import Flask, render_template_string, jsonify
 from dotenv import load_dotenv
 import requests
 import os
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 from flask_cors import CORS
 
 load_dotenv()
@@ -399,7 +399,6 @@ HTML = """
 
         function formatMoscowTime(isoString) {
             const date = new Date(isoString);
-            // Москва = UTC+3
             const options = {
                 timeZone: 'Europe/Moscow',
                 day: '2-digit',
@@ -477,7 +476,7 @@ HTML = """
 """
 
 def get_leaderboard():
-    now = datetime.now()
+    now = datetime.now(timezone.utc)   # берём именно UTC
     
     if cache["data"] and cache["last_update"] and (now - cache["last_update"]).total_seconds() < 120:
         return cache["data"]
@@ -519,7 +518,7 @@ def get_leaderboard():
         result = {
             "items": items,
             "total": data.get("totalCount", len(items)),
-            "updated": now.isoformat()
+            "updated": now.isoformat()   # теперь с timezone
         }
 
         cache["data"] = result
